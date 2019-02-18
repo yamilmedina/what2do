@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">what2doapp</string>
+    <string name="fill_your_destination_hint">¿Dónde es tu próximo viaje?</string>
+    <string name="action_settings">Preferencias</string>
+</resources>
