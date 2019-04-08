@@ -1,21 +1,23 @@
 package io.github.yamilmedina.what2doapp
 
+import android.app.SearchManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.SearchView
+import android.support.v7.widget.SearchView
 import io.github.yamilmedina.what2doapp.domain.Country
 import io.github.yamilmedina.what2doapp.utils.FileReaderWrapper
 
 
-class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+class HomeActivity : AppCompatActivity() {
 
     private lateinit var fileReader: FileReaderWrapper
     private lateinit var countries: List<Country>
     private lateinit var recyclerView: RecyclerView
     private lateinit var destinationAdapter: DestinationAdapter
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,15 +32,25 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         recyclerView.layoutManager = LinearLayoutManager(applicationContext)
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = destinationAdapter
+
+        setupSearchView()
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        false
-    }
+    private fun setupSearchView() {
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
+        searchView = findViewById(R.id.destinationSearch)
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        false
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                destinationAdapter.filter.filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(query: String): Boolean {
+                destinationAdapter.filter.filter(query)
+                return false
+            }
+        })
     }
 }
